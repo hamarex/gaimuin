@@ -79,7 +79,7 @@ b.key { color:var(--key); font-weight:800; }
     if (!correct && i < 0) P.wrongLog.push(id);
     if (correct && i >= 0) P.wrongLog.splice(i, 1);
   }
-  function reportBtn(id) { return '<button class="small sub" data-act="report" data-id="' + esc(id) + '">これ間違いでは?</button>'; }
+  function reportBtn(id) { return '<button class="small sub" data-act="report" data-id="' + esc(id) + '">間違いをメモ</button>'; }
 
   // ---------- 共通：1問ずつ即採点するランナー ----------
   // run = { ids:[問題ID], i, picked, title, onDone(summary), back }
@@ -166,7 +166,7 @@ b.key { color:var(--key); font-weight:800; }
     var eu = L.examUnlocked(P, DATA);
     h += '<button data-act="exam"' + (eu ? '' : ' disabled') + '>総仕上げ（本番形式）</button>' + (eu ? '' : '<span class="mute">全章の章末テスト合格で開きます</span>');
     h += '</div><div class="row"><button class="sub" data-act="review">復習（間違えた問題 ' + P.wrongLog.filter(function (id) { return qById[id]; }).length + ' 問）</button>';
-    h += '<button class="sub" data-act="reports">誤り報告（' + P.reports.length + '件）</button>';
+    h += '<button class="sub" data-act="reports">間違いメモ（' + P.reports.length + '件）</button>';
     h += '<button class="sub" data-act="settings">設定</button></div></div>';
     return h;
   }
@@ -364,14 +364,14 @@ b.key { color:var(--key); font-weight:800; }
     v.result = r; v.elapsed = Date.now() - v.t0; render(); window.scrollTo(0, 0);
   }
 
-  // ---------- 誤り報告 / 設定 ----------
+  // ---------- 間違いメモ / 設定 ----------
   function reportsView() {
-    var h = '<h1>誤り報告</h1><div class="card">';
-    if (!P.reports.length) h += '<p class="mute">まだありません。レッスンや問題の「これ間違いでは?」から追加できます。</p>';
+    var h = '<h1>間違いメモ</h1><div class="card">';
+    if (!P.reports.length) h += '<p class="mute">まだありません。レッスンや問題の「間違いをメモ」から追加できます。</p>';
     P.reports.forEach(function (r, i) {
       h += '<div class="chap"><div><span class="mute">' + esc(r.id) + '</span><br>' + esc(r.memo) + '</div><button class="small sub" data-act="report-del" data-i="' + i + '">削除</button></div>';
     });
-    return h + '</div><button data-act="export-reports"' + (P.reports.length ? '' : ' disabled') + '>誤り報告を書き出す</button><button class="sub" data-act="home">ホームへ</button>';
+    return h + '</div><button data-act="export-reports"' + (P.reports.length ? '' : ' disabled') + '>メモを書き出す</button><button class="sub" data-act="home">ホームへ</button>';
   }
   function settingsView() {
     var s = P.settings;
@@ -437,7 +437,7 @@ b.key { color:var(--key); font-weight:800; }
       case 'exam-submit': submitExam(); break;
       case 'report': {
         var memo = window.prompt('どこが間違いだと思いますか?（メモ）\n対象: ' + d.id, '');
-        if (memo !== null && memo.trim()) { P.reports.push({ id: d.id, memo: memo.trim(), ts: Date.now() }); save(); notice = '誤り報告を保存しました（' + d.id + '）。'; var yy = window.scrollY; render(); window.scrollTo(0, yy); }
+        if (memo !== null && memo.trim()) { P.reports.push({ id: d.id, memo: memo.trim(), ts: Date.now() }); save(); notice = 'メモを保存しました（' + d.id + '）。'; var yy = window.scrollY; render(); window.scrollTo(0, yy); }
         break;
       }
       case 'reports': go({ name: 'reports' }); break;
