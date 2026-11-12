@@ -13,7 +13,7 @@ test('renderInline', () => {
 test('parseChapter 第2章', () => {
   const r = (f) => readFileSync(new URL('../chapters/' + f, import.meta.url), 'utf8');
   const ch = parseChapter(r('02_fiea.md'), r('02b_choice.md'), 2);
-  assert.equal(ch.ox.length, 30);
+  assert.equal(ch.ox.length, 169);
   assert.equal(ch.mc.length, 10);
   assert.equal(ch.ox[0].answer, true);
   assert.equal(ch.ox[4].id, 'c02-ox-05');

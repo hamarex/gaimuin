@@ -12,7 +12,7 @@ test('件数', () => {
   assert.equal(data.chapters.length, 10);
   assert.ok(sum((c) => c.ox.length) >= 286); // 元286問 + 新規追加分
   assert.equal(sum((c) => c.mc.length), 87);
-  assert.equal(sum((c) => c.headingCount), 252);
+  assert.equal(sum((c) => c.headingCount), 714);
 });
 
 test('小項目は必ずどれかのレッスンに入る / ID重複なし', () => {
