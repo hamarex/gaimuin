@@ -342,13 +342,13 @@ b.key { color:var(--key); font-weight:800; }
       var b = r.byChapter[k], c = chapter(parseInt(k, 10));
       h += '<div class="chap"><div>第' + k + '章 ' + esc(c ? c.title : '') + '</div><div>' + b.correct + ' / ' + b.total + '（' + Math.round(b.correct * 100 / b.total) + '%）</div></div>';
     });
-    h += '</div><div class="card"><h2>間違えた問題・未回答</h2>';
+    h += '</div><div class="row"><button class="sub" data-act="toggle-wrong">' + (v.wrongOnly ? '全問を表示' : '誤答のみ表示') + '</button></div><div class="card"><h2>' + (v.wrongOnly ? '間違えた問題・未回答' : '全問の解答・解説') + '</h2>';
     var any = false;
     v.exam.ox.concat(v.exam.mc).forEach(function (q) {
       var a = v.answers[q.id], kind = q.stem !== undefined ? 'mc' : 'ox';
       var ok = a !== undefined && (kind === 'ox' ? L.gradeOx(q, a) : L.gradeMc(q, a)).correct;
-      if (ok) return; any = true;
-      h += '<div class="explain"><div class="q">' + (kind === 'ox' ? q.text : q.stem) + '</div><p class="ng">あなたの回答: ' + (a === undefined ? '未回答' : (kind === 'ox' ? (a ? '○' : '×') : a + '番')) + '　正解: ' + (kind === 'ox' ? (q.answer ? '○' : '×') : q.answer + '番') + '</p>' + explainHtml(q, kind) + '<p>' + reportBtn(q.id) + '</p></div>';
+      if (v.wrongOnly && ok) return; any = true;
+      h += '<div class="explain"><div class="q">' + (kind === 'ox' ? q.text : q.stem) + '</div><p class="' + (ok ? 'ok' : 'ng') + '">あなたの回答: ' + (a === undefined ? '未回答' : (kind === 'ox' ? (a ? '○' : '×') : a + '番')) + '　正解: ' + (kind === 'ox' ? (q.answer ? '○' : '×') : q.answer + '番') + '</p>' + explainHtml(q, kind) + '<p>' + reportBtn(q.id) + '</p></div>';
     });
     if (!any) h += '<p>全問正解です。</p>';
     return h + '</div><button data-act="home">ホームへ</button><button class="sub" data-act="exam">もう一度</button>';
@@ -361,7 +361,7 @@ b.key { color:var(--key); font-weight:800; }
       recordAnswer(q.id, ok);
     });
     save();
-    v.result = r; v.elapsed = Date.now() - v.t0; render(); window.scrollTo(0, 0);
+    v.result = r; v.wrongOnly = false; v.elapsed = Date.now() - v.t0; render(); window.scrollTo(0, 0);
   }
 
   // ---------- 間違いメモ / 設定 ----------
@@ -435,6 +435,7 @@ b.key { color:var(--key); font-weight:800; }
         view.answers[d.id] = val; var y = window.scrollY; render(); window.scrollTo(0, y); break;
       }
       case 'exam-submit': submitExam(); break;
+      case 'toggle-wrong': view.wrongOnly = !view.wrongOnly; { var ty = window.scrollY; render(); window.scrollTo(0, ty); } break;
       case 'report': {
         var memo = window.prompt('どこが間違いだと思いますか?（メモ）\n対象: ' + d.id, '');
         if (memo !== null && memo.trim()) { P.reports.push({ id: d.id, memo: memo.trim(), ts: Date.now() }); save(); notice = 'メモを保存しました（' + d.id + '）。'; var yy = window.scrollY; render(); window.scrollTo(0, yy); }
